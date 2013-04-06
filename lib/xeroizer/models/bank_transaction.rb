@@ -39,7 +39,7 @@ module Xeroizer
       belongs_to :contact, :model_name => 'Contact'
       string :line_amount_types
       has_many :line_items, :model_name => 'LineItem'
-      belongs_to :bank_account, :model_name => 'BankAccount'
+      belongs_to :bank_account, :model_name => 'Account'
 
       validates_inclusion_of :line_amount_types,
         :in => Xeroizer::Record::LINE_AMOUNT_TYPES, :allow_blanks => false

@@ -10,6 +10,7 @@ module Xeroizer
     class Account < Base
     
       TYPE = {
+        'BANK' =>           '',
         'CURRENT' =>        '',
         'FIXED' =>          '',
         'PREPAYMENT' =>     '',
@@ -61,6 +62,18 @@ module Xeroizer
       string  :reporting_code
       string  :reporting_code_name
       
+      # override from xml helper so we can get the correct node depending on whether it's BankAccount or not
+      def to_xml(b = Builder::XmlMarkup.new(:indent => 2))
+        optional_root_tag(parent.class.optional_xml_root_name, b) do |b|
+          b.tag!(self.type == 'BANK' ? 'BankAccount' : (parent.class.xml_node_name || parent.model_name)) { 
+            attributes.each do | key, value |
+              field = self.class.fields[key]
+              value = self.send(key) if field[:calculated]
+              xml_value_from_field(b, field, value) unless value.nil?
+            end
+          }
+        end
+      end
     end
     
   end
